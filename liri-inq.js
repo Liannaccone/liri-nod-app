@@ -33,15 +33,12 @@ function showOptions() {
 				case "Movie Info":
 					runMovieThis();
 					break;
-
 				case "Twitter":
 					runMyTweets();
 					break;
-
 				case "Spotify A Song":
 				 	runSpotifyThisSong();
 				 	break;
-
 				case "IDK, whatever":
 					runDoWhatItSays();
 					break;
@@ -68,10 +65,7 @@ function runMovieThis(randomInput) {
 			message: "What movie would you like info about?",
 			name: "userInput"
 		}
-
-
 		]).then(function(result) {
-
 			// if statement checking to see if the user input a movie, if they did and there are spaces....
 			if (result.userInput && result.userInput.indexOf(" ") > 0) {
 				movieName = result.userInput.replace(" ", "+");
@@ -84,13 +78,10 @@ function runMovieThis(randomInput) {
 			else{
 				movieName = "mr+nobody";
 			}
-
 			// ... run a request to the OMDB API with the movie specified
 			request("http://www.omdbapi.com/?t=" + movieName + "&apikey=trilogy", function(error, response, body) {
-
 		 		 // If the request is successful (i.e. if the response status code is 200)
 		 		 if (!error && response.statusCode === 200) {
-
 			 		// then print the following information...
 			    	console.log	("\n* Title:", JSON.parse(body).Title,
 			    				 "\n* Year:", JSON.parse(body).Year,
@@ -103,38 +94,33 @@ function runMovieThis(randomInput) {
 			    	runPlayAgain();
 		  		}
 			});
-
 		});
 	}
 	else{
-			// if statement checking to see if the user input a movie, if they did and there are spaces....
-			if (randomInput.indexOf(" ") > 0) {
-				movieName = randomInput.replace(" ", "+");
-			}
-			// if no spaces just assign userInput to movieName
-			else if (randomInput) {
-				movieName = randomInput
-			}
-
-			// ... run a request to the OMDB API with the movie specified
-			request("http://www.omdbapi.com/?t=" + movieName + "&apikey=trilogy", function(error, response, body) {
-
-		 		 // If the request is successful (i.e. if the response status code is 200)
-		 		 if (!error && response.statusCode === 200) {
-
-			 		// then print the following information...
-			    	console.log	("\n* Title:", JSON.parse(body).Title,
-			    				 "\n* Year:", JSON.parse(body).Year,
-			    				 "\n* IMDB Rating:", JSON.parse(body).imdbRating,
-			    				 "\n* Rotton Tomatoes Rating:", JSON.parse(body).Ratings[1].Value,
-			    				 "\n* Country Produced:", JSON.parse(body).Country,
-			     				 "\n* Language:", JSON.parse(body).Language,
-			    				 "\n* Plot:", JSON.parse(body).Plot,
-			    				 "\n* Actors:", JSON.parse(body).Actors, "\n")
-			    	runPlayAgain();
-		  		}
-			});
-
+		// if statement checking to see if the user input a movie, if they did and there are spaces....
+		if (randomInput.indexOf(" ") > 0) {
+			movieName = randomInput.replace(" ", "+");
+		}
+		// if no spaces just assign userInput to movieName
+		else if (randomInput) {
+			movieName = randomInput
+		}
+		// ... run a request to the OMDB API with the movie specified
+		request("http://www.omdbapi.com/?t=" + movieName + "&apikey=trilogy", function(error, response, body) {
+	 		 // If the request is successful (i.e. if the response status code is 200)
+	 		 if (!error && response.statusCode === 200) {
+		 		// then print the following information...
+		    	console.log	("\n* Title:", JSON.parse(body).Title,
+		    				 "\n* Year:", JSON.parse(body).Year,
+		    				 "\n* IMDB Rating:", JSON.parse(body).imdbRating,
+		    				 "\n* Rotton Tomatoes Rating:", JSON.parse(body).Ratings[1].Value,
+		    				 "\n* Country Produced:", JSON.parse(body).Country,
+		     				 "\n* Language:", JSON.parse(body).Language,
+		    				 "\n* Plot:", JSON.parse(body).Plot,
+		    				 "\n* Actors:", JSON.parse(body).Actors, "\n")
+		    	runPlayAgain();
+	  		}
+		});
 	}
 } // closing runMovieThis
 
