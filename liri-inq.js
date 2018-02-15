@@ -4,7 +4,7 @@ require("dotenv").config();
 // assigning variable for request npm package
 var request = require("request");
 
-var twitter = require('twitter');
+var Twitter = require('twitter');
 
 var Spotify = require('node-spotify-api');
 
@@ -15,8 +15,6 @@ var fs = require("fs");
 
 var keys = require("./keys.js");
 
-  // var spotify = new Spotify(keys.spotify);
-  // var client = new Twitter(keys.twitter);
 
 
 function showOptions() {
@@ -36,9 +34,9 @@ function showOptions() {
 					runMovieThis();
 					break;
 
-				// case "Twitter":
-				// 	runMyTweets();
-				// 	break;
+				case "Twitter":
+					runMyTweets();
+					break;
 
 				case "Spotify A Song":
 				 	runSpotifyThisSong();
@@ -61,6 +59,8 @@ showOptions();
 
 function runMovieThis(randomInput) {
 
+	var movieName = ""
+
 	if (!randomInput) {
 		inquirer.prompt([
 		{
@@ -71,9 +71,6 @@ function runMovieThis(randomInput) {
 
 
 		]).then(function(result) {
-
-
-			var movieName = ""
 
 			// if statement checking to see if the user input a movie, if they did and there are spaces....
 			if (result.userInput && result.userInput.indexOf(" ") > 0) {
@@ -110,8 +107,6 @@ function runMovieThis(randomInput) {
 		});
 	}
 	else{
-		var movieName = ""
-
 			// if statement checking to see if the user input a movie, if they did and there are spaces....
 			if (randomInput.indexOf(" ") > 0) {
 				movieName = randomInput.replace(" ", "+");
@@ -144,15 +139,33 @@ function runMovieThis(randomInput) {
 } // closing runMovieThis
 
 
+
+
 // =============================================
 //       MY-TWEETS
 // =============================================
 
-// function runMyTweets() {
+function runMyTweets() {
 
-// var client = new twitter(keys.twitter);
+	var client = new Twitter(keys.twitter);
+	var params = {
+        screen_name: 'inagarten'
+    };
 
-// };
+	client.get('statuses/user_timeline', params, function(error, tweets, response) {
+		if (error) {
+			console.log('Error occurred: ' + error);
+
+		}
+		else{
+			for (var i = 0; i < tweets.length; i++) {
+				console.log("\nCreated:",tweets[i].created_at,
+							"\nTweet:", tweets[i].text,"\n")
+			}
+		}
+		runPlayAgain();
+	});
+};
 
 
 // =============================================
@@ -161,6 +174,8 @@ function runMovieThis(randomInput) {
 
 function runSpotifyThisSong(randomInput) {
 	
+	var spotify = new Spotify(keys.spotify);
+
 	if (!randomInput) {
 		inquirer.prompt([
 		{
@@ -169,8 +184,7 @@ function runSpotifyThisSong(randomInput) {
 			name: "userInput"
 		}
 		]).then(function(result) {
-			
-			var spotify = new Spotify(keys.spotify);
+
 
 			if (result.userInput) {
 				spotify.search({ type: 'track', query: result.userInput, limit: 1 }, function(err, data) {
@@ -185,7 +199,7 @@ function runSpotifyThisSong(randomInput) {
 				});
 			}
 			else{
-				spotify.search({ type: 'artist', query: 'ace of base',  limit: 1 }, function(err, data) {
+				spotify.search({ type: 'track', query: 'white houses',  limit: 1 }, function(err, data) {
 		  			if (err) {
 		    			return console.log('Error occurred: ' + err);
 		  			}
@@ -200,7 +214,6 @@ function runSpotifyThisSong(randomInput) {
 		});
 	}
 	else {
-			var spotify = new Spotify(keys.spotify);
 
 			spotify.search({ type: 'track', query: randomInput, limit: 1 }, function(err, data) {
 	  			if (err) {
@@ -241,9 +254,9 @@ function runDoWhatItSays() {
 			runMovieThis(randomInput);
 			break;
 
-		// case "my-tweets":
-		// 	runMyTweets();
-		// 	break;
+		case "my-tweets":
+			runMyTweets();
+			break;
 
 		case "spotify-this-song":
 			runSpotifyThisSong(randomInput);
