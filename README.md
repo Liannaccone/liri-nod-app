@@ -1,6 +1,6 @@
 # liri-node-app
 
-description
+Language Interpretation and Recognition Interface (LIRI) is a command line node application that takes in parameters and returns back data. This version utilizes the node inquirer package to facilitate the user's request for movie information, song information, or tweets from the Barefoot Contessa.
 
 ## Setup and installation
 
