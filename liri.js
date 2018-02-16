@@ -10,7 +10,9 @@ var fs = require("fs");
 // file with links to external keys, user populates .env file with twitter and spotify keys
 var keys = require("./keys.js");
 
-
+console.log("\n");
+createLog();
+showOptions();
 
 function showOptions() {
 	inquirer.prompt([
@@ -38,8 +40,7 @@ function showOptions() {
 			};
 		});
 };
-console.log("\n");
-showOptions();
+
 
 // =============================================
 //       MOVIE-THIS
@@ -102,8 +103,10 @@ function runMyTweets() {
 		}
 		else{
 			for (var i = 0; i < tweets.length; i++) {
-				console.log("\nCreated:",tweets[i].created_at,
-							"\nTweet:", tweets[i].text,"\n")
+				var content = "\nCreated: " + tweets[i].created_at +
+							  "\nTweet: " + tweets[i].text + "\n";
+				console.log(content);
+				printToLog("\n********************** \n   Barefoot Tweet:\n**********************\n" + content);
 			}
 		}
 		runPlayAgain();
@@ -187,17 +190,17 @@ function runPlayAgain() {
 
 function showMovieInfo(input) {
 	request("http://www.omdbapi.com/?t=" + input + "&apikey=trilogy", function(error, response, body) {
-	 	// If the request is successful (i.e. if the response status code is 200)
 		if (!error && response.statusCode === 200) {
-			// then print the following information...
-		  	console.log	("\n* Title:", JSON.parse(body).Title,
-		  				 "\n* Year:", JSON.parse(body).Year,
-		  				 "\n* IMDB Rating:", JSON.parse(body).imdbRating,
-		  				 "\n* Rotton Tomatoes Rating:", JSON.parse(body).Ratings[1].Value,
-		  				 "\n* Country Produced:", JSON.parse(body).Country,
-		   				 "\n* Language:", JSON.parse(body).Language,
-		  				 "\n* Plot:", JSON.parse(body).Plot,
-		  				 "\n* Actors:", JSON.parse(body).Actors, "\n")
+		  	var content = "\n* Title: " +  JSON.parse(body).Title + 
+		  				 "\n* Year: " + JSON.parse(body).Year +
+		  				 "\n* IMDB Rating: " + JSON.parse(body).imdbRating +
+		  				 "\n* Rotton Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value +
+		  				 "\n* Country Produced: " + JSON.parse(body).Country +
+		   				 "\n* Language: " + JSON.parse(body).Language +
+		  				 "\n* Plot: " + JSON.parse(body).Plot +
+		  				 "\n* Actors: " + JSON.parse(body).Actors + "\n";
+		  	console.log(content);
+		  	printToLog("\n********************** \n        Movie:\n**********************\n" + content);
 		  	runPlayAgain();
 	  	}
 	});
@@ -210,15 +213,33 @@ function showSongInfo(input) {
 		if (err) {
 		 	return console.log('Error occurred: ' + err);
 		}
-		console.log("\n* Artist:", data.tracks.items[0].artists[0].name,
-					"\n* Song Title:", data.tracks.items[0].name,
-					"\n* Album Title:", data.tracks.items[0].album.name,
-					"\n* Preview Link:", data.tracks.items[0].external_urls.spotify,"\n");
-		runPlayAgain();
+	var content = "\n* Artist: " + data.tracks.items[0].artists[0].name +
+					"\n* Song Title: " + data.tracks.items[0].name +
+					"\n* Album Title: " + data.tracks.items[0].album.name +
+					"\n* Preview Link: " + data.tracks.items[0].external_urls.spotify + "\n";
+	console.log(content);
+	printToLog("\n********************** \n        Song:\n**********************\n" + content)
+	runPlayAgain();
 	});
 };
 
 
+function createLog() {
+	fs.writeFile("log.txt", "Liri Log\n", function(err) {
+  		if (err) {
+    		return console.log(err);
+ 		 }
+	});
+};
+
+
+function printToLog(content) {
+	fs.appendFile("log.txt", content, function(err) {
+	  if (err) {
+	    console.log(err);
+	  }
+	});
+};
 
 
 
