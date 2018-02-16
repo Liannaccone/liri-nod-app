@@ -1,18 +1,13 @@
 // read and set any environment variables with the dotenv package...
 require("dotenv").config();
 
-// assigning variable for request npm package
+// assigning variable for corresponding npm packages
 var request = require("request");
-
 var Twitter = require('twitter');
-
 var Spotify = require('node-spotify-api');
-
 var inquirer = require("inquirer");
-
-// fs is a core Node package for reading and writing files
 var fs = require("fs");
-
+// file with links to external keys, user populates .env file with twitter and spotify keys
 var keys = require("./keys.js");
 
 
@@ -25,8 +20,6 @@ function showOptions() {
 			choices: ["Movie Info", "Twitter", "Spotify A Song", "IDK, whatever"],
 			name: "userChoice"
 		}
-
-
 		]).then(function(result) {
 			// switch statement to run the function corresponding to the operation the user input (userOper)
 			switch (result.userChoice) {
@@ -43,7 +36,6 @@ function showOptions() {
 					runDoWhatItSays();
 					break;
 			};
-
 		});
 };
 console.log("\n");
@@ -52,8 +44,6 @@ showOptions();
 // =============================================
 //       MOVIE-THIS
 // =============================================
-
-
 function runMovieThis(randomInput) {
 
 	var movieName = ""
@@ -79,21 +69,7 @@ function runMovieThis(randomInput) {
 				movieName = "mr+nobody";
 			}
 			// ... run a request to the OMDB API with the movie specified
-			request("http://www.omdbapi.com/?t=" + movieName + "&apikey=trilogy", function(error, response, body) {
-		 		 // If the request is successful (i.e. if the response status code is 200)
-		 		 if (!error && response.statusCode === 200) {
-			 		// then print the following information...
-			    	console.log	("\n* Title:", JSON.parse(body).Title,
-			    				 "\n* Year:", JSON.parse(body).Year,
-			    				 "\n* IMDB Rating:", JSON.parse(body).imdbRating,
-			    				 "\n* Rotton Tomatoes Rating:", JSON.parse(body).Ratings[1].Value,
-			    				 "\n* Country Produced:", JSON.parse(body).Country,
-			     				 "\n* Language:", JSON.parse(body).Language,
-			    				 "\n* Plot:", JSON.parse(body).Plot,
-			    				 "\n* Actors:", JSON.parse(body).Actors, "\n")
-			    	runPlayAgain();
-		  		}
-			});
+			showMovieInfo(movieName);
 		});
 	}
 	else{
@@ -106,31 +82,13 @@ function runMovieThis(randomInput) {
 			movieName = randomInput
 		}
 		// ... run a request to the OMDB API with the movie specified
-		request("http://www.omdbapi.com/?t=" + movieName + "&apikey=trilogy", function(error, response, body) {
-	 		 // If the request is successful (i.e. if the response status code is 200)
-	 		 if (!error && response.statusCode === 200) {
-		 		// then print the following information...
-		    	console.log	("\n* Title:", JSON.parse(body).Title,
-		    				 "\n* Year:", JSON.parse(body).Year,
-		    				 "\n* IMDB Rating:", JSON.parse(body).imdbRating,
-		    				 "\n* Rotton Tomatoes Rating:", JSON.parse(body).Ratings[1].Value,
-		    				 "\n* Country Produced:", JSON.parse(body).Country,
-		     				 "\n* Language:", JSON.parse(body).Language,
-		    				 "\n* Plot:", JSON.parse(body).Plot,
-		    				 "\n* Actors:", JSON.parse(body).Actors, "\n")
-		    	runPlayAgain();
-	  		}
-		});
+		showMovieInfo(movieName);
 	}
 } // closing runMovieThis
 
-
-
-
 // =============================================
-//       MY-TWEETS
+//       FUNCTION: MY-TWEETS
 // =============================================
-
 function runMyTweets() {
 
 	var client = new Twitter(keys.twitter);
@@ -141,7 +99,6 @@ function runMyTweets() {
 	client.get('statuses/user_timeline', params, function(error, tweets, response) {
 		if (error) {
 			console.log('Error occurred: ' + error);
-
 		}
 		else{
 			for (var i = 0; i < tweets.length; i++) {
@@ -155,13 +112,10 @@ function runMyTweets() {
 
 
 // =============================================
-//       SPOTIFY-THIS-SONG
+//       FUNCTION: SPOTIFY-THIS-SONG
 // =============================================
 
 function runSpotifyThisSong(randomInput) {
-	
-	var spotify = new Spotify(keys.spotify);
-
 	if (!randomInput) {
 		inquirer.prompt([
 		{
@@ -170,89 +124,46 @@ function runSpotifyThisSong(randomInput) {
 			name: "userInput"
 		}
 		]).then(function(result) {
-
-
 			if (result.userInput) {
-				spotify.search({ type: 'track', query: result.userInput, limit: 1 }, function(err, data) {
-		  			if (err) {
-		    			return console.log('Error occurred: ' + err);
-		  			}
-		  			console.log("\n* Artist:", data.tracks.items[0].artists[0].name,
-		  						"\n* Song Title:", data.tracks.items[0].name,
-		  						"\n* Album Title:", data.tracks.items[0].album.name,
-		  						"\n* Preview Link:", data.tracks.items[0].external_urls.spotify,"\n");
-				runPlayAgain();
-				});
+				showSongInfo(result.userInput);
 			}
 			else{
-				spotify.search({ type: 'track', query: 'white houses',  limit: 1 }, function(err, data) {
-		  			if (err) {
-		    			return console.log('Error occurred: ' + err);
-		  			}
-		  			console.log("\n* Artist:", data.tracks.items[0].artists[0].name,
-		  						"\n* Song Title:", data.tracks.items[0].name,
-		  						"\n* Album Title:", data.tracks.items[0].album.name,
-		  						"\n* Preview Link:", data.tracks.items[0].external_urls.spotify,"\n");
-				runPlayAgain();
-				});
+				showSongInfo("white houses");
 			}
-
 		});
 	}
 	else {
-
-			spotify.search({ type: 'track', query: randomInput, limit: 1 }, function(err, data) {
-	  			if (err) {
-	    			return console.log('Error occurred: ' + err);
-	  			}
-	  			console.log("\n* Artist:", data.tracks.items[0].artists[0].name,
-	  						"\n* Song Title:", data.tracks.items[0].name,
-	  						"\n* Album Title:", data.tracks.items[0].album.name,
-	  						"\n* Preview Link:", data.tracks.items[0].external_urls.spotify,"\n");
-	  		runPlayAgain();
-			});
+		showSongInfo(randomInput);
 	}
 };
 
 
-
 // =============================================
-//       DO-WHAT-IT-SAYS
+//       FUNCTION: DO-WHAT-IT-SAYS
 // =============================================
-
-
 function runDoWhatItSays() {
-
 	fs.readFile("random.txt", "utf8", function(error, data) {
-
 	  if (error) {
 	    return console.log(error);
 	  }
 
 		var dataArr = data.split(",");
-
 		var randomOper = dataArr[0];
 		var randomInput = dataArr[1];
 
-
 		switch (randomOper) {
 			case "movie-this":
-			runMovieThis(randomInput);
-			break;
-
-		case "my-tweets":
-			runMyTweets();
-			break;
-
-		case "spotify-this-song":
-			runSpotifyThisSong(randomInput);
-			break;
+				runMovieThis(randomInput);
+				break;
+			case "my-tweets":
+				runMyTweets();
+				break;
+			case "spotify-this-song":
+				runSpotifyThisSong(randomInput);
+				break;
 		}
-
 	})
 };
-
-
 
 
 function runPlayAgain() {
@@ -272,6 +183,41 @@ function runPlayAgain() {
 	});
 
 }
+
+
+function showMovieInfo(input) {
+	request("http://www.omdbapi.com/?t=" + input + "&apikey=trilogy", function(error, response, body) {
+	 	// If the request is successful (i.e. if the response status code is 200)
+		if (!error && response.statusCode === 200) {
+			// then print the following information...
+		  	console.log	("\n* Title:", JSON.parse(body).Title,
+		  				 "\n* Year:", JSON.parse(body).Year,
+		  				 "\n* IMDB Rating:", JSON.parse(body).imdbRating,
+		  				 "\n* Rotton Tomatoes Rating:", JSON.parse(body).Ratings[1].Value,
+		  				 "\n* Country Produced:", JSON.parse(body).Country,
+		   				 "\n* Language:", JSON.parse(body).Language,
+		  				 "\n* Plot:", JSON.parse(body).Plot,
+		  				 "\n* Actors:", JSON.parse(body).Actors, "\n")
+		  	runPlayAgain();
+	  	}
+	});
+};
+
+
+function showSongInfo(input) {
+	var spotify = new Spotify(keys.spotify);
+	spotify.search({ type: 'track', query: input, limit: 1 }, function(err, data) {
+		if (err) {
+		 	return console.log('Error occurred: ' + err);
+		}
+		console.log("\n* Artist:", data.tracks.items[0].artists[0].name,
+					"\n* Song Title:", data.tracks.items[0].name,
+					"\n* Album Title:", data.tracks.items[0].album.name,
+					"\n* Preview Link:", data.tracks.items[0].external_urls.spotify,"\n");
+		runPlayAgain();
+	});
+};
+
 
 
 
