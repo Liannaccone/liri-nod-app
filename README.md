@@ -22,15 +22,13 @@ Language Interpretation and Recognition Interface (LIRI) is a command line node 
   You will then be able to run the application after entering ```node liri.js``` into the commant line. The inquirer prompts      will then prompt you for input to generate movie information, song information, or tweets from the Barefoot Contessa.
   
   
-  
-  
-  ## Technology Used
-  - Javascript
-  - Node.js
-  - Node Packages:
-    - Inquirer
-    - Request
-    - Open Movie Database (OMDB)
-    - Twitter
-    - Spotify
+## Technology Used
+- Javascript
+- Node.js 
+- Node Packages:
+  - Inquirer
+  - Request
+  - Open Movie Database (OMDB)
+  - Twitter
+  - Spotify
 
