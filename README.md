@@ -2,7 +2,7 @@
 
 Language Interpretation and Recognition Interface (LIRI) is a command line node application that takes in parameters and returns back data. This version utilizes the node inquirer package to facilitate the user's request for movie information, song information, or tweets from the Barefoot Contessa.
 
-## Setup and Useage
+## Setup and Usage
 * Clone the repository.
 * Install Javascript packages: 
   In order for LIRI to run properly, please obtain Twitter and Spotify API keys and add them to a .env file saved in the same   directory. 
